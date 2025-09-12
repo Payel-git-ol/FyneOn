@@ -1,12 +1,11 @@
 from pathlib import Path
+from mongoengine import connect
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 SECRET_KEY = 'django-insecure-bof5fk)5=9u#ksuxr(yea2qc6w5%@8@zj7%anbmwxii^sm44a*'
 DEBUG = True
 ALLOWED_HOSTS = []
-
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -15,11 +14,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
     'rest_framework',
-    'api',             
+    'api',
 ]
-
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -31,14 +28,12 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-
-ROOT_URLCONF = 'postwork.urls' 
-
+ROOT_URLCONF = 'postwork.urls'
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [], 
+        'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -50,16 +45,13 @@ TEMPLATES = [
     },
 ]
 
-
 WSGI_APPLICATION = 'postwork.wsgi.application'
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
+MONGO_DB_NAME = 'popa'
+MONGO_HOST = 'localhost'
+MONGO_PORT = 27017
 
+connect(db=MONGO_DB_NAME, host=MONGO_HOST, port=MONGO_PORT)
 
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',},
@@ -68,21 +60,18 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',},
 ]
 
-#ЛОКАЛИЗАЦИЯ ТОЖЕ НЕ НУЖНА, НО Я ОСТАВИЛ
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
-#СТАТИКА КОТОРОЯ НАХЕР НЕ НУЖНА
 STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.AllowAny',  
+        'rest_framework.permissions.AllowAny',
     ]
 }

@@ -1,8 +1,8 @@
-from django.db import models
+from mongoengine import Document, StringField
 
-class Message(models.Model):
-    sender = models.CharField(max_length=255)
-    content = models.TextField()
-    
-    def __str__(self):  
+class Message(Document):
+    sender = StringField(max_length=255, required=True)
+    content = StringField(required=True)
+
+    def __str__(self):
         return f"{self.sender}: {self.content[:20]}"
