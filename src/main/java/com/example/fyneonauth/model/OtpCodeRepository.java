@@ -7,5 +7,5 @@ import java.util.Optional;
 
 @Repository
 public interface OtpCodeRepository extends JpaRepository<OtpCode, Integer> {
-    Optional<OtpCode> findByEmail(String email);
+    Optional<OtpCode> findTopByEmailOrderByExpiresAtDesc(String email);
 }
