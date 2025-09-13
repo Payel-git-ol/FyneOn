@@ -4,15 +4,22 @@ import com.example.fyneonauth.Service.EmailService;
 import com.example.fyneonauth.Service.JwtService;
 import com.example.fyneonauth.Service.OtpService;
 import com.example.fyneonauth.Service.UserService;
+import com.example.fyneonauth.model.User;
+import com.example.fyneonauth.model.UserInfoResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 @RestController
 @RequestMapping ("/auth")
 public class ControllerAuth {
+
     @Autowired
     private OtpService otpService;
+
     @Autowired
     private EmailService emailService;
 
@@ -41,8 +48,10 @@ public class ControllerAuth {
         }
     }
 
+
     @Autowired
     private JwtService jwtService;
+
 
     @GetMapping
     public ResponseEntity<String> me(@RequestHeader("Authorization") String authHeader) {
@@ -55,6 +64,29 @@ public class ControllerAuth {
     @Autowired
     private UserService userService;
 
+    @GetMapping("/user/{email}")
+    public ResponseEntity<UserInfoResponse> getUserByInfo(@PathVariable String email) {
+        try {
+            Optional<User> userOptional = userService.getUserByEmail(email);
+
+            if (userOptional.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            }
+
+            User user = userOptional.get();
+            UserInfoResponse response = new UserInfoResponse(
+                    user.getId(),
+                    user.getName(),
+                    user.getEmail()
+            );
+
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
+
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestHeader("Authorization") String authHeader,@RequestParam String name) {
         System.out.println("name = " + name);
@@ -62,10 +94,12 @@ public class ControllerAuth {
             String token = authHeader.replace("Bearer ", "");
             String email = jwtService.extractEmail(token);
             userService.register(email, name);
+
             System.out.println("authHeader = " + authHeader);
             return ResponseEntity.ok("Пользователь зарегистрирован");
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Ошибка сервера: " + e.getMessage());
         }
     }
+
 }
